@@ -21,6 +21,11 @@ enum CommandType {
         after_date: String,
     },
     FilePerCommit,
+    FileCoupling {
+        #[clap(long)]
+        /// Filename to query on.
+        filename: String,
+    }
 }
 
 impl CommandType {
@@ -106,6 +111,58 @@ impl CommandType {
                 }
 
             }
+            CommandType::FileCoupling { filename } => {
+                let client_options = ClientOptions::parse(mongo_uri).await.unwrap();
+                let mdb_client = Client::with_options(client_options).unwrap();
+                let db = mdb_client.database(DB_NAME);
+                let collection = db.collection::<GitCommit>(COLL_NAME);
+
+                let pipeline = vec![
+                    doc! {
+                        "$match": {"files.filename": filename}
+                    },
+                    doc! {
+                        "$facet": {
+                            "total_commits": [{"$count": "commit"}],
+                            "seen_with": [
+                                {
+                                    "$unwind": {"path": "$files"}
+                                },
+                                {
+                                    "$match": {"files.filename": {"$ne": filename}}
+                                },
+                                {
+                                    "$group": {
+                                        "_id": "$files.filename", 
+                                        "count": {"$sum": 1}
+                                    }
+                                },
+                                {
+                                    "$sort": {
+                                        "count": -1
+                                    }
+                                }
+                            ],
+                        }
+                    }
+                ];
+
+                let mut results = collection.aggregate(pipeline, None).await.unwrap();
+                while let Some(result) = results.next().await {
+                    let r = result.unwrap();
+                    // dbg!(&r);
+                    let item: FileCoupling = bson::from_document(r).unwrap();
+                    let total = item.total_commits[0].commit;
+                    println!("{}: {} instances", filename, total);
+                    println!("");
+                    for x in item.seen_with {
+                        let percent = x.count as f64 / total as f64 * 100.0;
+                        println!(" - {}: {}: {:.02}%", x._id, x.count, percent);
+
+                    }
+                }
+
+            }
         }
     }
 }
@@ -142,6 +199,23 @@ struct GitCommit {
     author: String,
     summary: String,
     files: Vec<FileChange>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+struct SeenWith {
+    _id: String,
+    count: u64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+struct CommitCount {
+    commit: u64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+struct FileCoupling {
+    total_commits: Vec<CommitCount>,
+    seen_with: Vec<SeenWith>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
