@@ -1,4 +1,5 @@
 use anyhow::Result;
+use chrono::{DateTime, Utc};
 use futures::StreamExt;
 use mongodb::{
     bson::{self, doc, Document},
@@ -17,7 +18,8 @@ pub struct FileChange {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GitCommit {
     pub commit: String,
-    pub date: String,
+    #[serde(with = "bson::serde_helpers::chrono_datetime_as_bson_datetime")]
+    pub date: DateTime<Utc>,
     pub author: String,
     pub summary: String,
     pub files: Vec<FileChange>,

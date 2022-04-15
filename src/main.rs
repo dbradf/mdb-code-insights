@@ -5,6 +5,7 @@ use mdb_code_insights::{
     db::{FileChange, GitCommit, MongoInstance},
     git::GitProxy,
 };
+use chrono::prelude::*;
 
 const DB_NAME: &str = "code_insights";
 const COLL_NAME: &str = "commits";
@@ -55,7 +56,7 @@ impl CommandType {
                             let parts: Vec<&str> = line.split("--").collect();
                             current_commit = Some(GitCommit {
                                 commit: parts[1].to_string(),
-                                date: parts[2].to_string(),
+                                date: DateTime::<Utc>::from_utc(NaiveDate::parse_from_str(parts[2], "%Y-%m-%d").unwrap().and_hms(0, 0, 0), Utc),
                                 author: parts[3].to_string(),
                                 summary: parts[4].to_string(),
                                 files: vec![],
