@@ -1,10 +1,10 @@
 use std::{path::PathBuf, time::Instant};
 
 use clap::{Parser, Subcommand};
-use cmd_lib::run_fun;
-use futures::StreamExt;
-use mongodb::{options::ClientOptions, Client, bson::{doc, self}};
-use serde::{Serialize, Deserialize};
+use mdb_code_insights::{
+    db::{FileChange, GitCommit, MongoInstance},
+    git::GitProxy,
+};
 
 const DB_NAME: &str = "code_insights";
 const COLL_NAME: &str = "commits";
@@ -20,18 +20,21 @@ enum CommandType {
         /// Cutoff date to look back [format="YYYY-MM-DD"].
         after_date: String,
     },
-    FilePerCommit,
+    FilesPerCommit,
     FileCoupling {
         #[clap(long)]
         /// Filename to query on.
         filename: String,
-    }
+    },
 }
 
 impl CommandType {
-    pub async fn execute(&self, mongo_uri: &str) {
+    pub async fn execute(&self, mongo: MongoInstance) {
         match self {
-            CommandType::Load { repo_dir, after_date } => {
+            CommandType::Load {
+                repo_dir,
+                after_date,
+            } => {
                 let now = Instant::now();
                 let git = GitProxy::new(repo_dir);
                 let output = git.log(&after_date);
@@ -73,95 +76,26 @@ impl CommandType {
                 println!("Loaded {} commits!", commit_list.len());
 
                 let now = Instant::now();
-                let client_options = ClientOptions::parse(mongo_uri).await.unwrap();
-                let mdb_client = Client::with_options(client_options).unwrap();
-                let db = mdb_client.database(DB_NAME);
-                let collection = db.collection::<GitCommit>(COLL_NAME);
-
-                collection.insert_many(commit_list, None).await.unwrap();
+                mongo.insert_commits(&commit_list).await.unwrap();
                 eprintln!("Sent data to mongo in: {}ms", now.elapsed().as_millis());
             }
-            CommandType::FilePerCommit => {
-                let client_options = ClientOptions::parse(mongo_uri).await.unwrap();
-                let mdb_client = Client::with_options(client_options).unwrap();
-                let db = mdb_client.database(DB_NAME);
-                let collection = db.collection::<GitCommit>(COLL_NAME);
-
-                let pipeline = vec![
-                    doc! {
-                        "$addFields": {"file_count": {"$size": "$files"}}
-                    },
-                    doc! {
-                        "$group": {
-                            "_id": "$author", 
-                            "avg_files": {"$avg": "$file_count"}, 
-                            "n_commits": {"$count": {}}
-                        }
-                    },
-                    doc! {
-                        "$sort": {"avg_files": -1_i32}
-                    },
-                ];
-
-                let mut results = collection.aggregate(pipeline, None).await.unwrap();
-                while let Some(result) = results.next().await {
-
-                    let item: FilesPerCommit = bson::from_document(result.unwrap()).unwrap();
+            CommandType::FilesPerCommit => {
+                let results = mongo.file_per_commit().await.unwrap();
+                for item in results {
                     println!("{}({}): {}", item._id, item.n_commits, item.avg_files);
                 }
-
             }
             CommandType::FileCoupling { filename } => {
-                let client_options = ClientOptions::parse(mongo_uri).await.unwrap();
-                let mdb_client = Client::with_options(client_options).unwrap();
-                let db = mdb_client.database(DB_NAME);
-                let collection = db.collection::<GitCommit>(COLL_NAME);
-
-                let pipeline = vec![
-                    doc! {
-                        "$match": {"files.filename": filename}
-                    },
-                    doc! {
-                        "$facet": {
-                            "total_commits": [{"$count": "commit"}],
-                            "seen_with": [
-                                {
-                                    "$unwind": {"path": "$files"}
-                                },
-                                {
-                                    "$match": {"files.filename": {"$ne": filename}}
-                                },
-                                {
-                                    "$group": {
-                                        "_id": "$files.filename", 
-                                        "count": {"$sum": 1}
-                                    }
-                                },
-                                {
-                                    "$sort": {
-                                        "count": -1
-                                    }
-                                }
-                            ],
-                        }
-                    }
-                ];
-
-                let mut results = collection.aggregate(pipeline, None).await.unwrap();
-                while let Some(result) = results.next().await {
-                    let r = result.unwrap();
-                    // dbg!(&r);
-                    let item: FileCoupling = bson::from_document(r).unwrap();
+                let results = mongo.file_coupling(filename).await.unwrap();
+                for item in results {
                     let total = item.total_commits[0].commit;
                     println!("{}: {} instances", filename, total);
                     println!("");
                     for x in item.seen_with {
                         let percent = x.count as f64 / total as f64 * 100.0;
                         println!(" - {}: {}: {:.02}%", x._id, x.count, percent);
-
                     }
                 }
-
             }
         }
     }
@@ -173,6 +107,14 @@ struct Args {
     #[clap(long, default_value = "mongodb://localhost:27017")]
     mongo_uri: String,
 
+    /// Database to use.
+    #[clap(long, default_value = DB_NAME)]
+    database: String,
+
+    /// Collection to use.
+    #[clap(long, default_value = COLL_NAME)]
+    collection: String,
+
     #[clap(subcommand)]
     /// Subcommand to execute.
     command: CommandType,
@@ -181,66 +123,8 @@ struct Args {
 #[tokio::main]
 async fn main() {
     let args = Args::parse();
-    args.command.execute(&args.mongo_uri).await;
-}
-
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-struct FileChange {
-    added: u64,
-    deleted: u64,
-    filename: String,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-struct GitCommit {
-    commit: String,
-    date: String,
-    author: String,
-    summary: String,
-    files: Vec<FileChange>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-struct SeenWith {
-    _id: String,
-    count: u64,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-struct CommitCount {
-    commit: u64,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-struct FileCoupling {
-    total_commits: Vec<CommitCount>,
-    seen_with: Vec<SeenWith>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-struct FilesPerCommit {
-    _id: String,
-    avg_files: f64,
-    n_commits: u64,
-}
-
-struct GitProxy {
-    working_dir: PathBuf,
-}
-
-impl GitProxy {
-    pub fn new(working_dir: &PathBuf) -> Self {
-        Self {
-            working_dir: working_dir.to_path_buf(),
-        }
-    }
-
-    pub fn log(&self, after_date: &str) -> String {
-        let dir = &self.working_dir;
-        run_fun!(
-            cd $dir;
-            git log --numstat --date=short --pretty=format:"--%h--%cd--%aN--%s" --no-renames --after=$after_date
-        ).unwrap()
-    }
+    let mongo = MongoInstance::new(&args.mongo_uri, &args.database, &args.collection)
+        .await
+        .unwrap();
+    args.command.execute(mongo).await;
 }
