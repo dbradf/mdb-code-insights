@@ -1,11 +1,11 @@
 use std::{path::PathBuf, time::Instant};
 
+use chrono::prelude::*;
 use clap::{Parser, Subcommand};
 use mdb_code_insights::{
     db::{FileChange, GitCommit, MongoInstance},
     git::GitProxy,
 };
-use chrono::prelude::*;
 
 const DB_NAME: &str = "code_insights";
 const COLL_NAME: &str = "commits";
@@ -23,6 +23,11 @@ enum CommandType {
     },
     FilesPerCommit,
     FileCoupling {
+        #[clap(long)]
+        /// Filename to query on.
+        filename: String,
+    },
+    FileOwnership {
         #[clap(long)]
         /// Filename to query on.
         filename: String,
@@ -56,7 +61,12 @@ impl CommandType {
                             let parts: Vec<&str> = line.split("--").collect();
                             current_commit = Some(GitCommit {
                                 commit: parts[1].to_string(),
-                                date: DateTime::<Utc>::from_utc(NaiveDate::parse_from_str(parts[2], "%Y-%m-%d").unwrap().and_hms(0, 0, 0), Utc),
+                                date: DateTime::<Utc>::from_utc(
+                                    NaiveDate::parse_from_str(parts[2], "%Y-%m-%d")
+                                        .unwrap()
+                                        .and_hms(0, 0, 0),
+                                    Utc,
+                                ),
                                 author: parts[3].to_string(),
                                 summary: parts[4].to_string(),
                                 files: vec![],
@@ -96,6 +106,15 @@ impl CommandType {
                         let percent = x.count as f64 / total as f64 * 100.0;
                         println!(" - {}: {}: {:.02}%", x._id, x.count, percent);
                     }
+                }
+            }
+            CommandType::FileOwnership { filename } => {
+                let results = mongo.file_ownership(filename).await.unwrap();
+                let total: u64 = results.iter().map(|r| r.count).sum();
+                println!("Owners of {}: {} total changes", filename, total);
+                for item in results {
+                    let percent = item.count as f64 / total as f64 * 100.0;
+                    println!("{}: {} ({:.02}%)", item._id, item.count, percent);
                 }
             }
         }

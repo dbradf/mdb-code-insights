@@ -49,6 +49,12 @@ pub struct FileCoupling {
     pub seen_with: Vec<SeenWith>,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct FileOwnership {
+    pub _id: String,
+    pub count: u64,
+}
+
 pub struct MongoInstance {
     collection: Collection<GitCommit>,
 }
@@ -116,6 +122,22 @@ impl MongoInstance {
                         }
                     ],
                 }
+            },
+        ];
+
+        self.aggregate(pipeline).await
+    }
+
+    pub async fn file_ownership(&self, filename: &str) -> Result<Vec<FileOwnership>> {
+        let pipeline = vec![
+            doc! {
+                "$unwind": {"path": "$files"}
+            },
+            doc! {
+                "$match": {"files.filename": filename}
+            },
+            doc! {
+                "$sortByCount": "$author"
             },
         ];
 
