@@ -144,6 +144,22 @@ impl MongoInstance {
         self.aggregate(pipeline).await
     }
 
+    pub async fn file_activity(&self, since_date: &DateTime<Utc>) -> Result<Vec<FileOwnership>> {
+        let pipeline = vec![
+            doc! {
+                "$match": {"date": {"$gt": since_date}}
+            },
+            doc! {
+                "$unwind": {"path": "$files"}
+            },
+            doc! {
+                "$sortByCount": "$files.filename" 
+            },
+        ];
+
+        self.aggregate(pipeline).await
+    }
+
     async fn aggregate<T>(&self, pipeline: impl IntoIterator<Item = Document>) -> Result<Vec<T>>
     where
         T: DeserializeOwned,

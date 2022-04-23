@@ -1,4 +1,4 @@
-use std::{path::PathBuf, time::Instant};
+use std::{path::PathBuf, time::Instant, str::FromStr};
 
 use chrono::prelude::*;
 use clap::{Parser, Subcommand};
@@ -32,6 +32,11 @@ enum CommandType {
         /// Filename to query on.
         filename: String,
     },
+    MostActiveFiles {
+        #[clap(long)]
+        /// Look at files touched since this date.
+        since: String,
+    }
 }
 
 impl CommandType {
@@ -61,12 +66,7 @@ impl CommandType {
                             let parts: Vec<&str> = line.split("--").collect();
                             current_commit = Some(GitCommit {
                                 commit: parts[1].to_string(),
-                                date: DateTime::<Utc>::from_utc(
-                                    NaiveDate::parse_from_str(parts[2], "%Y-%m-%d")
-                                        .unwrap()
-                                        .and_hms(0, 0, 0),
-                                    Utc,
-                                ),
+                                date: iso_date_to_datetime(parts[2]),
                                 author: parts[3].to_string(),
                                 summary: parts[4].to_string(),
                                 files: vec![],
@@ -117,8 +117,21 @@ impl CommandType {
                     println!("{}: {} ({:.02}%)", item._id, item.count, percent);
                 }
             }
+            CommandType::MostActiveFiles { since } => {
+                let since_date = iso_date_to_datetime(since);
+                let results = mongo.file_activity(&since_date).await.unwrap();
+                println!("Most active files:");
+                for item in results {
+                    println!("{}: {}", item._id, item.count);
+                }
+            }
         }
     }
+}
+
+fn iso_date_to_datetime(iso_date: &str) -> DateTime<Utc> {
+    DateTime::<Utc>::from_utc(NaiveDate::parse_from_str(iso_date, "%Y-%m-%d").unwrap().and_hms(0, 0, 0), Utc)
+
 }
 
 #[derive(Debug, Parser)]
