@@ -1,4 +1,4 @@
-use std::{path::PathBuf, time::Instant, str::FromStr};
+use std::{path::PathBuf, str::FromStr, time::Instant};
 
 use chrono::prelude::*;
 use clap::{Parser, Subcommand};
@@ -36,7 +36,7 @@ enum CommandType {
         #[clap(long)]
         /// Look at files touched since this date.
         since: String,
-    }
+    },
 }
 
 impl CommandType {
@@ -130,8 +130,12 @@ impl CommandType {
 }
 
 fn iso_date_to_datetime(iso_date: &str) -> DateTime<Utc> {
-    DateTime::<Utc>::from_utc(NaiveDate::parse_from_str(iso_date, "%Y-%m-%d").unwrap().and_hms(0, 0, 0), Utc)
-
+    DateTime::<Utc>::from_utc(
+        NaiveDate::parse_from_str(iso_date, "%Y-%m-%d")
+            .unwrap()
+            .and_hms(0, 0, 0),
+        Utc,
+    )
 }
 
 #[derive(Debug, Parser)]

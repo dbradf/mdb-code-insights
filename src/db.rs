@@ -153,7 +153,7 @@ impl MongoInstance {
                 "$unwind": {"path": "$files"}
             },
             doc! {
-                "$sortByCount": "$files.filename" 
+                "$sortByCount": "$files.filename"
             },
         ];
 
