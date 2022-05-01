@@ -1,4 +1,4 @@
-use std::{path::PathBuf, time::Instant};
+use std::{io::BufRead, path::PathBuf, time::Instant};
 
 use chrono::prelude::*;
 use clap::{Parser, Subcommand};
@@ -52,7 +52,7 @@ impl CommandType {
             } => {
                 let now = Instant::now();
                 let git = GitProxy::new(repo_dir);
-                let output = git.log(&after_date);
+                let output = git.log(after_date).unwrap();
                 eprintln!("Git Query in: {}s", now.elapsed().as_secs());
 
                 let now = Instant::now();
@@ -60,6 +60,7 @@ impl CommandType {
                 let mut current_commit: Option<GitCommit> = None;
                 let mut file_list = vec![];
                 for line in output.lines() {
+                    let line = line.unwrap();
                     if !line.trim().is_empty() {
                         if line.starts_with("--") {
                             if let Some(mut commit) = current_commit {
@@ -75,15 +76,13 @@ impl CommandType {
                                 summary: parts[4].to_string(),
                                 files: vec![],
                             });
-                        } else {
-                            if current_commit.is_some() {
-                                let parts: Vec<&str> = line.split_ascii_whitespace().collect();
-                                file_list.push(FileChange {
-                                    added: parts[0].parse().unwrap_or_default(),
-                                    deleted: parts[1].parse().unwrap_or_default(),
-                                    filename: parts[2].to_string(),
-                                });
-                            }
+                        } else if current_commit.is_some() {
+                            let parts: Vec<&str> = line.split_ascii_whitespace().collect();
+                            file_list.push(FileChange {
+                                added: parts[0].parse().unwrap_or_default(),
+                                deleted: parts[1].parse().unwrap_or_default(),
+                                filename: parts[2].to_string(),
+                            });
                         }
                     }
                 }
@@ -105,7 +104,7 @@ impl CommandType {
                 for item in results {
                     let total = item.total_commits[0].commit;
                     println!("{}: {} instances", filename, total);
-                    println!("");
+                    println!();
                     for x in item.seen_with {
                         let percent = x.count as f64 / total as f64 * 100.0;
                         println!(" - {}: {}: {:.02}%", x._id, x.count, percent);
