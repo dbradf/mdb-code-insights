@@ -1,4 +1,4 @@
-use std::{path::PathBuf, str::FromStr, time::Instant};
+use std::{path::PathBuf, time::Instant};
 
 use chrono::prelude::*;
 use clap::{Parser, Subcommand};
@@ -35,7 +35,11 @@ enum CommandType {
     MostActiveFiles {
         #[clap(long)]
         /// Look at files touched since this date.
-        since: String,
+        since: Option<String>,
+
+        #[clap(long)]
+        /// file prefix to filter on.
+        prefix: Option<String>,
     },
 }
 
@@ -117,9 +121,12 @@ impl CommandType {
                     println!("{}: {} ({:.02}%)", item._id, item.count, percent);
                 }
             }
-            CommandType::MostActiveFiles { since } => {
-                let since_date = iso_date_to_datetime(since);
-                let results = mongo.file_activity(&since_date).await.unwrap();
+            CommandType::MostActiveFiles { since, prefix } => {
+                let since_date = since.as_ref().map(|s| iso_date_to_datetime(s));
+                let results = mongo
+                    .file_activity(since_date.as_ref(), prefix.as_deref())
+                    .await
+                    .unwrap();
                 println!("Most active files:");
                 for item in results {
                     println!("{}: {}", item._id, item.count);

@@ -144,18 +144,15 @@ impl MongoInstance {
         self.aggregate(pipeline).await
     }
 
-    pub async fn file_activity(&self, since_date: &DateTime<Utc>) -> Result<Vec<FileOwnership>> {
-        let pipeline = vec![
-            doc! {
-                "$match": {"date": {"$gt": since_date}}
-            },
-            doc! {
-                "$unwind": {"path": "$files"}
-            },
-            doc! {
-                "$sortByCount": "$files.filename"
-            },
-        ];
+    pub async fn file_activity(
+        &self,
+        since_date: Option<&DateTime<Utc>>,
+        file_prefix: Option<&str>,
+    ) -> Result<Vec<FileOwnership>> {
+        let mut pipeline = create_filter(since_date, file_prefix);
+        pipeline.push(doc! {
+            "$sortByCount": "$files.filename"
+        });
 
         self.aggregate(pipeline).await
     }
@@ -171,4 +168,19 @@ impl MongoInstance {
         }
         Ok(items)
     }
+}
+
+fn create_filter(since_date: Option<&DateTime<Utc>>, file_prefix: Option<&str>) -> Vec<Document> {
+    let mut filter = vec![];
+    if let Some(since_date) = since_date {
+        filter.push(doc! { "$match": {"date": {"$gt": since_date}}});
+    }
+    filter.push(doc! {"$unwind": {"path": "$files"}});
+
+    if let Some(file_prefix) = file_prefix {
+        let re_match = format!("^{}", file_prefix);
+        filter.push(doc! {"$match": {"files.filename": {"$regex": re_match}}});
+    }
+
+    filter
 }
