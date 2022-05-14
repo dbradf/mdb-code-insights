@@ -1,14 +1,13 @@
 use std::{io::BufRead, path::PathBuf, time::Instant};
 
+use anyhow::Result;
 use chrono::prelude::*;
 use clap::{Parser, Subcommand};
 use mdb_code_insights::{
+    config::Config,
     db::{FileChange, GitCommit, MongoInstance},
     git::GitProxy,
 };
-
-const DB_NAME: &str = "code_insights";
-const COLL_NAME: &str = "commits";
 
 #[derive(Debug, Subcommand)]
 enum CommandType {
@@ -90,6 +89,7 @@ impl CommandType {
                 println!("Loaded {} commits!", commit_list.len());
 
                 let now = Instant::now();
+                mongo.create_indexes().await.unwrap();
                 mongo.insert_commits(&commit_list).await.unwrap();
                 eprintln!("Sent data to mongo in: {}ms", now.elapsed().as_millis());
             }
@@ -147,27 +147,45 @@ fn iso_date_to_datetime(iso_date: &str) -> DateTime<Utc> {
 #[derive(Debug, Parser)]
 struct Args {
     /// URI to mongodb instance.
-    #[clap(long, default_value = "mongodb://localhost:27017")]
-    mongo_uri: String,
+    #[clap(long)]
+    mongo_uri: Option<String>,
 
     /// Database to use.
-    #[clap(long, default_value = DB_NAME)]
-    database: String,
+    #[clap(long)]
+    database: Option<String>,
+
+    /// Path to config file to use.
+    #[clap(long, parse(from_os_str))]
+    config_file: Option<PathBuf>,
 
     /// Collection to use.
-    #[clap(long, default_value = COLL_NAME)]
-    collection: String,
+    #[clap(long)]
+    collection: Option<String>,
 
     #[clap(subcommand)]
     /// Subcommand to execute.
     command: CommandType,
 }
 
+impl Args {
+    pub async fn get_mongo_instance(&self) -> Result<MongoInstance> {
+        if let Some(config_file) = &self.config_file {
+            let config = Config::from_yaml_file(config_file)?;
+            Ok(MongoInstance::new(&config.mongo_uri, &config.database, &config.collection).await?)
+        } else {
+            Ok(MongoInstance::new(
+                self.mongo_uri.as_ref().expect("Could not find mongo URI"),
+                self.database.as_ref().expect("Could nto find database"),
+                self.collection.as_ref().expect("Could not find collection"),
+            )
+            .await?)
+        }
+    }
+}
+
 #[tokio::main]
 async fn main() {
     let args = Args::parse();
-    let mongo = MongoInstance::new(&args.mongo_uri, &args.database, &args.collection)
-        .await
-        .unwrap();
+    let mongo = args.get_mongo_instance().await.unwrap();
     args.command.execute(mongo).await;
 }

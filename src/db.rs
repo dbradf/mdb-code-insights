@@ -3,8 +3,8 @@ use chrono::{DateTime, Utc};
 use futures::StreamExt;
 use mongodb::{
     bson::{self, doc, Document},
-    options::ClientOptions,
-    Client, Collection,
+    options::{ClientOptions, IndexOptions},
+    Client, Collection, IndexModel,
 };
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 
@@ -67,6 +67,32 @@ impl MongoInstance {
         Ok(Self {
             collection: database.collection(collection),
         })
+    }
+
+    pub async fn create_indexes(&self) -> Result<()> {
+        let index_options = IndexOptions::builder().unique(true).build();
+        let index_model = IndexModel::builder()
+            .keys(doc! { "commit": 1_i32 })
+            .options(index_options)
+            .build();
+        self.collection.create_index(index_model, None).await?;
+
+        let index_model = IndexModel::builder().keys(doc! {"date": -1_i32}).build();
+        self.collection.create_index(index_model, None).await?;
+
+        let index_model = IndexModel::builder()
+            .keys(doc! {"date": -1_i32, "files.filename": 1_i32})
+            .build();
+        self.collection.create_index(index_model, None).await?;
+
+        let index_model = IndexModel::builder()
+            .keys(doc! {"files.filename": 1_i32})
+            .build();
+        self.collection.create_index(index_model, None).await?;
+
+        let index_model = IndexModel::builder().keys(doc! {"author": 1_i32}).build();
+        self.collection.create_index(index_model, None).await?;
+        Ok(())
     }
 
     pub async fn insert_commits(&self, commit_list: &[GitCommit]) -> Result<()> {

@@ -24,7 +24,7 @@ impl GitProxy {
                 "log",
                 "--numstat",
                 "--date=short",
-                "--pretty=format:--%h--%cd--aN--%s",
+                "--pretty=format:--%h--%cd--%aN--%s",
                 "--no-renames",
                 "--after",
                 after_date,
