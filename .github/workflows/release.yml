@@ -30,7 +30,7 @@ jobs:
           - name: windows
             os: windows-latest
             artifact_name: target/release/mdb-code-insights-windows.exe
-            asset_name: mdb-code-insights-windows
+            asset_name: mdb-code-insights-windows.exe
             build_artifact_name: mdb-code-insights.exe
 
     steps:
