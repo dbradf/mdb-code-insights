@@ -198,6 +198,28 @@ Vesselina Ratcheva: 14 (4.53%)
 ...
 ```
 
+## Using Charts
+
+If you load the commit data into an Atlas cluster, you can then use Charts to quickly build some
+visualizations of your commit data.
+
+### File activity with Charts
+
+We previously showed how to use an aggregation to find files that are changing the most. Using
+charts we can get a more visual representation of that data.
+
+```
+Chart Type: Bar / Stacked
+X Axis: commit
+    Aggregate: Count
+Y Axis: files.filename 
+    Array Reductions: Unwind Array
+    Sort By: Value
+    Limit Results: 30
+Series: date
+    Binning: Month
+```
+
 ## Inspiration
 
 * [Code Maat](https://github.com/adamtornhill/code-maat)
