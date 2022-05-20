@@ -1,0 +1,95 @@
+name: Release
+on: 
+  push:
+    tags: 
+      - '*'
+
+jobs:
+  build_artifacts:
+    name: Build artifacts for ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        name: [
+          linux,
+          macos,
+          windows,
+        ]
+
+        include:
+          - name: linux
+            os: ubuntu-latest
+            artifact_name: target/release/mdb-code-insights-linux
+            asset_name: mdb-code-insights-linux
+          - name: macos
+            os: macos-latest
+            artifact_name: target/release/mdb-code-insights-macos
+            asset_name: mdb-code-insights-macos
+          - name: windows
+            os: windows-latest
+            artifact_name: target/release/mdb-code-insights-windows
+            asset_name: mdb-code-insights-windows
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+
+      - name: Build
+        run: cargo build --release --locked
+
+      - name: Rename artifacts
+        run: mv target/release/mdb-code-insights target/release/${{ matrix.asset_name }}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.asset_name }}
+          path: ${{ matrix.artifact_name }}
+
+  build_artifacts_m1:
+    name: Build artifacts for macos M1
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          target: aarch64-apple-darwin
+
+      - name: Build
+        run: cargo build --release --locked --target aarch64-apple-darwin
+
+      - name: Rename artifacts
+        run: mv target/aarch64-apple-darwin/release/mdb-code-insights target/release/mdb-code-insights-macos-m1
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: mdb-code-insights-macos-m1
+          path: target/release/mdb-code-insights-macos-m1
+
+  deploy_artifacts:
+    name: Create release
+    needs: [build_artifacts, build_artifacts_m1]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get artifacts
+        uses: actions/download-artifact@v2
+
+      - run: ls
+
+      - name: Upload release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "mdb-code-insights-*/*"
+          token: ${{ secrets.GITHUB_TOKEN }}
