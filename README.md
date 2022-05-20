@@ -37,7 +37,7 @@ date. You can use this to find hotspots in the code that may benefit from refact
 
 The following aggregation will provide that data:
 
-```json
+```
 [
     {
         $match: {
@@ -75,7 +75,7 @@ For large repositories, you may wish to only look at part of the repository, we 
 filter in our aggregation to do just that (you can use the `--prefix` option from the command line
 to include this).
 
-```json
+```
 [
     {
         $match: {
@@ -105,7 +105,7 @@ to include this).
 Once we are aware of an active file, we might want to see how other files are coupled to it. We can
 use the following aggregation to gather that data:
 
-```json
+```
 [
     { 
         "$match": { 
@@ -165,7 +165,7 @@ src/mongo/db/repl/replication_coordinator_impl.cpp: 309 instances
 It can also be useful to check if a file has a clear owner. We can use the following aggregation
 to check who has been changing a file the most:
 
-```json
+```
 [
     { 
         $match: { date: { $gt: ISODate("2020-01-01") } } 
