@@ -21,14 +21,17 @@ jobs:
             os: ubuntu-latest
             artifact_name: target/release/mdb-code-insights-linux
             asset_name: mdb-code-insights-linux
+            build_artifact_name: mdb-code-insights
           - name: macos
             os: macos-latest
             artifact_name: target/release/mdb-code-insights-macos
             asset_name: mdb-code-insights-macos
+            build_artifact_name: mdb-code-insights
           - name: windows
             os: windows-latest
-            artifact_name: target/release/mdb-code-insights-windows
+            artifact_name: target/release/mdb-code-insights-windows.exe
             asset_name: mdb-code-insights-windows
+            build_artifact_name: mdb-code-insights.exe
 
     steps:
       - name: Checkout
@@ -44,7 +47,7 @@ jobs:
         run: cargo build --release --locked
 
       - name: Rename artifacts
-        run: mv target/release/mdb-code-insights target/release/${{ matrix.asset_name }}
+        run: mv target/release/${{ matrix.build_artifact_name }} target/release/${{ matrix.asset_name }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
