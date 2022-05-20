@@ -120,11 +120,26 @@ impl MongoInstance {
         self.aggregate(pipeline).await
     }
 
-    pub async fn file_coupling(&self, filename: &str) -> Result<Vec<FileCoupling>> {
-        let pipeline = vec![
+    pub async fn file_coupling(
+        &self,
+        filename: &str,
+        since_date: Option<&DateTime<Utc>>,
+    ) -> Result<Vec<FileCoupling>> {
+        let filter = if let Some(since_date) = since_date {
+            doc! { "$match": {
+                "date": {"$gt": since_date},
+                "files.filename": filename,
+            }}
+        } else {
             doc! {
-                "$match": {"files.filename": filename}
-            },
+                "$match": {
+                    "files.filename": filename,
+                }
+            }
+        };
+
+        let pipeline = vec![
+            filter,
             doc! {
                 "$facet": {
                     "total_commits": [{"$count": "commit"}],
@@ -154,18 +169,18 @@ impl MongoInstance {
         self.aggregate(pipeline).await
     }
 
-    pub async fn file_ownership(&self, filename: &str) -> Result<Vec<FileOwnership>> {
-        let pipeline = vec![
-            doc! {
-                "$unwind": {"path": "$files"}
-            },
-            doc! {
-                "$match": {"files.filename": filename}
-            },
-            doc! {
-                "$sortByCount": "$author"
-            },
-        ];
+    pub async fn file_ownership(
+        &self,
+        filename: &str,
+        since_date: Option<&DateTime<Utc>>,
+    ) -> Result<Vec<FileOwnership>> {
+        let mut pipeline = create_filter(since_date, None);
+        pipeline.push(doc! {
+            "$match": {"files.filename": filename}
+        });
+        pipeline.push(doc! {
+            "$sortByCount": "$author"
+        });
 
         self.aggregate(pipeline).await
     }

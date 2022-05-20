@@ -25,13 +25,21 @@ enum CommandType {
         #[clap(long)]
         /// Filename to query on.
         filename: String,
+
+        #[clap(long)]
+        /// Look at files touched since this date.
+        since: Option<String>,
     },
     FileOwnership {
         #[clap(long)]
         /// Filename to query on.
         filename: String,
+
+        #[clap(long)]
+        /// Look at files touched since this date.
+        since: Option<String>,
     },
-    MostActiveFiles {
+    FileActivity {
         #[clap(long)]
         /// Look at files touched since this date.
         since: Option<String>,
@@ -99,8 +107,12 @@ impl CommandType {
                     println!("{}({}): {}", item._id, item.n_commits, item.avg_files);
                 }
             }
-            CommandType::FileCoupling { filename } => {
-                let results = mongo.file_coupling(filename).await.unwrap();
+            CommandType::FileCoupling { filename, since } => {
+                let since_date = since.as_ref().map(|s| iso_date_to_datetime(s));
+                let results = mongo
+                    .file_coupling(filename, since_date.as_ref())
+                    .await
+                    .unwrap();
                 for item in results {
                     let total = item.total_commits[0].commit;
                     println!("{}: {} instances", filename, total);
@@ -111,8 +123,12 @@ impl CommandType {
                     }
                 }
             }
-            CommandType::FileOwnership { filename } => {
-                let results = mongo.file_ownership(filename).await.unwrap();
+            CommandType::FileOwnership { filename, since } => {
+                let since_date = since.as_ref().map(|s| iso_date_to_datetime(s));
+                let results = mongo
+                    .file_ownership(filename, since_date.as_ref())
+                    .await
+                    .unwrap();
                 let total: u64 = results.iter().map(|r| r.count).sum();
                 println!("Owners of {}: {} total changes", filename, total);
                 for item in results {
@@ -120,13 +136,12 @@ impl CommandType {
                     println!("{}: {} ({:.02}%)", item._id, item.count, percent);
                 }
             }
-            CommandType::MostActiveFiles { since, prefix } => {
+            CommandType::FileActivity { since, prefix } => {
                 let since_date = since.as_ref().map(|s| iso_date_to_datetime(s));
                 let results = mongo
                     .file_activity(since_date.as_ref(), prefix.as_deref())
                     .await
                     .unwrap();
-                println!("Most active files:");
                 for item in results {
                     println!("{}: {}", item._id, item.count);
                 }
