@@ -1,6 +1,6 @@
 [package]
 name = "mdb-code-insights"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 authors = ["David Bradford"]
 license = "Apache-2.0"
@@ -17,3 +17,7 @@ bson = {version = "2.2", features = ["chrono-0_4"]}
 serde = {version = "1.0", features = ["derive"]}
 serde_yaml = "0.8"
 tokio = {version = "1", features = ["full"]}
+
+[profile.release]
+strip = true
+lto = true
