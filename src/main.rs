@@ -57,10 +57,8 @@ impl CommandType {
                 repo_dir,
                 after_date,
             } => {
-                let now = Instant::now();
                 let git = GitProxy::new(repo_dir);
                 let output = git.log(after_date).unwrap();
-                eprintln!("Git Query in: {}s", now.elapsed().as_secs());
 
                 let now = Instant::now();
                 let mut commit_list = vec![];

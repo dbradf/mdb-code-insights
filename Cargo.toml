@@ -2,8 +2,10 @@
 name = "mdb-code-insights"
 version = "0.1.0"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+authors = ["David Bradford"]
+license = "Apache-2.0"
+repository = "https://github.com/dbradf/mdb-code-insights"
+readme = "README.md"
 
 [dependencies]
 anyhow = "1.0"
