@@ -2,6 +2,8 @@
 
 Load your git commit data into a MongoDB instance to generate reports on your data.
 
+[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/dbradf/mdb-code-insights)](https://github.com/dbradf/mdb-code-insights/releases/latest)
+
 ## Usage
 
 First, create a config file to store details of how to store the data. This file should be YAML
