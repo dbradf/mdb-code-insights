@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /tags/*
+
+Sitemap: https://dbradf.github.io/mdb-code-insights/sitemap.xml

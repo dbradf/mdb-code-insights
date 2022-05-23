@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>MDB Code Insights | Documentation</title>
+    <link>https://dbradf.github.io/mdb-code-insights/getting_started/</link>
+    <description>Recent content on MDB Code Insights | Documentation</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language><atom:link href="https://dbradf.github.io/mdb-code-insights/getting_started/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title></title>
+      <link>https://dbradf.github.io/mdb-code-insights/getting_started/installation/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://dbradf.github.io/mdb-code-insights/getting_started/installation/</guid>
+      <description>Prerequisites     In order to use this tool, you will need the following:
+ git command line: Version 2.17 or higher MongoDB: Version 5.0 or higher. Most features of the tool will work with a local instance of MongoDB. In order to work with Chart&amp;rsquo;s visualizations, you will need to use an Atlas cluster.  Install pre-built binaries     Pre-built binaries for Linux, Mac, and Windows are available here.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://dbradf.github.io/mdb-code-insights/getting_started/configuration/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://dbradf.github.io/mdb-code-insights/getting_started/configuration/</guid>
+      <description>There are a few pieces of information needed to run the tool. These can be provided via command line arguments or with a configuration file.
+The required details are:
+ mongo_uri: The URI to use to connect to mongodb. database: The database in the mongo instance to store/load data. collection: The collection in the database to store/load data.  Command line configuration     All three options mentioned can be provided as command line options (see mdb-code-insights --help for details).</description>
+    </item>
+    
+  </channel>
+</rss>

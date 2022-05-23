@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>MDB Code Insights | Documentation</title>
+    <link>https://dbradf.github.io/mdb-code-insights/demo/</link>
+    <description>Recent content on MDB Code Insights | Documentation</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language><atom:link href="https://dbradf.github.io/mdb-code-insights/demo/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title></title>
+      <link>https://dbradf.github.io/mdb-code-insights/demo/loading_data/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://dbradf.github.io/mdb-code-insights/demo/loading_data/</guid>
+      <description>Before starting this demo, before to have the prerequisites installed as described in the intro.  The first thing we need to do is load data from our git repository into our MongoDB instance. This is done with the load subcommand. You will need a local copy of the git repository you wish to analyze before starting. For the demo, we will assume that the repo has been cloned to $HOME/repos/mongo.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://dbradf.github.io/mdb-code-insights/demo/file_activity/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://dbradf.github.io/mdb-code-insights/demo/file_activity/</guid>
+      <description>Before performing this analysis, before you have some data loaded from a git repository  Now that we have some data in our mongo instance, lets start analyzing it. A useful place to start it to see which files have been changed the most. Files that change frequently are more likely to contain bugs or be bottlenecks in the development process.
+Using an aggregation     We can use the following aggregation to find frequently changed files:</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://dbradf.github.io/mdb-code-insights/demo/file_coupling/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://dbradf.github.io/mdb-code-insights/demo/file_coupling/</guid>
+      <description>Before performing this analysis, you will want to have a active file to target  From the previous step, we decided to target the file src/mongo/db/repl/replication_coordinator_impl.cpp and see how it is coupled to other files in the repository.
+Using an aggregation     We can analyze the file coupling with the following aggregation:
+[ { &amp;quot;$match&amp;quot;: { &amp;quot;date&amp;quot;: {&amp;quot;$gt&amp;quot;: ISODate(&amp;quot;2020-01-01&amp;quot;)}, &amp;quot;files.filename&amp;quot;: &amp;quot;src/mongo/db/repl/replication_coordinator_impl.cpp&amp;quot; } }, { &amp;quot;$facet&amp;quot;: { &amp;quot;total_commits&amp;quot;: [{ &amp;quot;$count&amp;quot;: &amp;quot;commit&amp;quot; }], &amp;quot;seen_with&amp;quot;: [ { &amp;quot;$unwind&amp;quot;: { &amp;quot;path&amp;quot;: &amp;quot;$files&amp;quot; } }, { &amp;quot;$match&amp;quot;: { &amp;quot;files.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://dbradf.github.io/mdb-code-insights/demo/file_ownership/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://dbradf.github.io/mdb-code-insights/demo/file_ownership/</guid>
+      <description>Before performing this analysis, you will want to have a active file to target  One interesting view of a file is who has been making changes to it. This can be particularly useful when there are questions about the file or changes to it that need to be reviewed. We can analyze the file ownership to determine who has made the most changes to a file.
+Using an aggregation     We can analyze the file ownership with the following aggregation:</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://dbradf.github.io/mdb-code-insights/demo/using_charts/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://dbradf.github.io/mdb-code-insights/demo/using_charts/</guid>
+      <description>Before performing this analysis, you will want to have a data loaded  If we load the data in a MongoDB Atlas cluster, we can use Charts to quickly create visualizations of the data. This section will look at an example chart.
+ This section of the demo only works with data loaded in a MongoDB Atlas cluster. It is not available when running against other MongoDB instances.  Visualizing File Activity     In File ownership part of the demo, we looked at an aggregation that gave us a list of file that have been the most active.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://dbradf.github.io/mdb-code-insights/demo/intro/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://dbradf.github.io/mdb-code-insights/demo/intro/</guid>
+      <description>This demo will walk through using the mdb-code-insights tool to analyze a git repository. If you want to follow along, be sure to have the tool installed and configured.
+The demo will walk through an analysis of the mongodb/mongo repository, but the steps should work with any git repository.
+For this demo, we will store our configuration in a file called &amp;ldquo;config.yml&amp;rdquo;. It should look similar to this (feel free to customize it to your liking):</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://dbradf.github.io/mdb-code-insights/demo/loading_data/</loc>
+  </url><url>
+    <loc>https://dbradf.github.io/mdb-code-insights/getting_started/</loc>
+  </url><url>
+    <loc>https://dbradf.github.io/mdb-code-insights/getting_started/installation/</loc>
+  </url><url>
+    <loc>https://dbradf.github.io/mdb-code-insights/demo/file_activity/</loc>
+  </url><url>
+    <loc>https://dbradf.github.io/mdb-code-insights/getting_started/configuration/</loc>
+  </url><url>
+    <loc>https://dbradf.github.io/mdb-code-insights/demo/file_coupling/</loc>
+  </url><url>
+    <loc>https://dbradf.github.io/mdb-code-insights/demo/</loc>
+  </url><url>
+    <loc>https://dbradf.github.io/mdb-code-insights/demo/file_ownership/</loc>
+  </url><url>
+    <loc>https://dbradf.github.io/mdb-code-insights/demo/using_charts/</loc>
+  </url><url>
+    <loc>https://dbradf.github.io/mdb-code-insights/</loc>
+    <priority>0</priority>
+  </url><url>
+    <loc>https://dbradf.github.io/mdb-code-insights/demo/intro/</loc>
+  </url><url>
+    <loc>https://dbradf.github.io/mdb-code-insights/categories/</loc>
+  </url><url>
+    <loc>https://dbradf.github.io/mdb-code-insights/tags/</loc>
+  </url>
+</urlset>
