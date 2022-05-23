@@ -1,2 +1,9 @@
 /target
 config.yml
+
+gh-pages-publish-linux
+hugo
+hugo_*.tar.gz
+docs/public
+docs/LICENSE
+docs/README.md
