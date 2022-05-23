@@ -96,3 +96,26 @@ jobs:
         with:
           artifacts: "mdb-code-insights-*/*"
           token: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy_documentation:
+    name: Deploy Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Build docs
+        working-directory: ./docs
+        run: |
+          wget -q https://github.com/gohugoio/hugo/releases/download/v0.99.1/hugo_0.99.1_Linux-64bit.tar.gz
+          tar xf hugo_0.99.1_Linux-64bit.tar.gz 
+          ./hugo
+
+      - name: Publish docs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          wget -q https://github.com/dbradf/gh-pages-publish/releases/download/0.2.0/gh-pages-publish-linux
+          chmod +x gh-pages-publish-linux
+          git remote set-url --push origin https://evergreen-ci:$GITHUB_TOKEN@github.com/dbradf/mdb-code-insights
+          ./gh-pages-publish-linux --docs-dir docs/public --verbose
