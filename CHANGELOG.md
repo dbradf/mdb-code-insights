@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.3 - 2022-05-24
+
+- Improve usage documentation.
+
 ## 0.1.2 - 2022-05-23
 
 - Ignore duplicate key errors

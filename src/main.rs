@@ -11,6 +11,7 @@ use mdb_code_insights::{
 
 #[derive(Debug, Subcommand)]
 enum CommandType {
+    /// Load data from git into a mongo instance.
     Load {
         #[clap(long, parse(from_os_str), default_value = ".")]
         /// Path to repository to read.
@@ -20,7 +21,9 @@ enum CommandType {
         /// Cutoff date to look back [format="YYYY-MM-DD"].
         after_date: String,
     },
+    /// Generate a report on the average number of files per commit by author.
     FilesPerCommit,
+    /// Generate a report on file-coupling for the given file.
     FileCoupling {
         #[clap(long)]
         /// Filename to query on.
@@ -30,6 +33,7 @@ enum CommandType {
         /// Look at files touched since this date.
         since: Option<String>,
     },
+    /// Generate a report on the author ownership of the given file.
     FileOwnership {
         #[clap(long)]
         /// Filename to query on.
@@ -39,6 +43,7 @@ enum CommandType {
         /// Look at files touched since this date.
         since: Option<String>,
     },
+    /// Generate a report on the most active files.
     FileActivity {
         #[clap(long)]
         /// Look at files touched since this date.
