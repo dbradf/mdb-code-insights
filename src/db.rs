@@ -3,10 +3,13 @@ use chrono::{DateTime, Utc};
 use futures::StreamExt;
 use mongodb::{
     bson::{self, doc, Document},
-    options::{ClientOptions, IndexOptions},
+    error::ErrorKind,
+    options::{ClientOptions, IndexOptions, InsertManyOptions},
     Client, Collection, IndexModel,
 };
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
+
+const DUPLICATE_KEY_ERR: i32 = 11000;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct FileChange {
@@ -96,7 +99,24 @@ impl MongoInstance {
     }
 
     pub async fn insert_commits(&self, commit_list: &[GitCommit]) -> Result<()> {
-        self.collection.insert_many(commit_list, None).await?;
+        let options = InsertManyOptions::builder().ordered(false).build();
+        let result = self
+            .collection
+            .insert_many(commit_list, Some(options))
+            .await;
+        if let Err(error) = &result {
+            if let ErrorKind::BulkWrite(bulk_write_failures) = &error.kind.as_ref() {
+                if let Some(failure_list) = &bulk_write_failures.write_errors {
+                    if !failure_list
+                        .iter()
+                        .any(|f| f.code != DUPLICATE_KEY_ERR) {
+                        return Ok(());
+                    }
+                }
+            }
+            dbg!(&result);
+            result?;
+        }
         Ok(())
     }
 
