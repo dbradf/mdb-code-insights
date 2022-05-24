@@ -118,4 +118,5 @@ jobs:
           wget -q https://github.com/dbradf/gh-pages-publish/releases/download/0.2.0/gh-pages-publish-linux
           chmod +x gh-pages-publish-linux
           git remote set-url --push origin https://evergreen-ci:$GITHUB_TOKEN@github.com/dbradf/mdb-code-insights
+          git fetch origin gh-pages
           ./gh-pages-publish-linux --docs-dir docs/public --verbose
