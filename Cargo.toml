@@ -1,6 +1,6 @@
 [package]
 name = "mdb-code-insights"
-version = "0.1.2"
+version = "0.1.3"
 edition = "2021"
 authors = ["David Bradford"]
 license = "Apache-2.0"

@@ -3,223 +3,34 @@
 Load your git commit data into a MongoDB instance to generate reports on your data.
 
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/dbradf/mdb-code-insights)](https://github.com/dbradf/mdb-code-insights/releases/latest)
+[![Documentation](https://img.shields.io/badge/Docs-Published-green)](https://dbradf.github.io/mdb-code-insights/)
+
+## Documentation
+
+Documentation can be found [here](https://dbradf.github.io/mdb-code-insights/).
 
 ## Usage
 
-First, create a config file to store details of how to store the data. This file should be YAML
-and should contain the following keys:
-
-```yaml
-mongo_uri: mongodb://localhost:27017
-database: code_insights
-collection: mongodb
 ```
+mdb-code-insights 
 
-- **mongo_uri**: URI to connect to the MongoDB instance to store the data.
-- **database**: Name of database to store the data in.
-- **collection**: Name of collection to store the data in.
+USAGE:
+    mdb-code-insights [OPTIONS] <SUBCOMMAND>
 
-Once you have a configuration file, you can use the `load` subcommand to load git data into the
-specified MongoDB instance:
+OPTIONS:
+        --collection <COLLECTION>      Collection to use
+        --config-file <CONFIG_FILE>    Path to config file to use
+        --database <DATABASE>          Database to use
+    -h, --help                         Print help information
+        --mongo-uri <MONGO_URI>        URI to mongodb instance
 
-```bash
-mdb-code-insights --config-file config.yml my-repo load --after-date 2018-01-01 --repo-dir path/to/repo
-```
-
-- **--after-date**: Load commits created after the given date.
-- **--repo-dir**: Directory containing the git repository to analyze.
-
-Once the data has been loaded, you can use things like aggregations and charts to analyze it. There
-are a few aggregations built into the tool.
-
-### File activity
-
-The file activity aggregation will show which files have been the most actively since a given
-date. You can use this to find hotspots in the code that may benefit from refactoring.
-
-The following aggregation will provide that data:
-
-```
-[
-    {
-        $match: {
-            date: {$gt: ISODate("2020-01-01")},
-        },
-    },
-    {
-        $unwind: {
-            path: "$files",
-        },
-    },
-    {
-        $sortByCount: "$files.filename",
-    },
-]
-```
-
-You can use the `mdb-code-insights` tool to run this aggregation for you and display the results:
-
-```bash
-$ mdb-code-insights --config-file config.yml file-activity --since 2020-01-01
-src/third_party/wiredtiger/import.data: 1335
-etc/evergreen.yml: 892
-src/mongo/db/SConscript: 354
-src/mongo/db/repl/replication_coordinator_impl.cpp: 309
-src/mongo/db/s/SConscript: 299
-src/mongo/db/repl/SConscript: 245
-SConstruct: 226
-src/third_party/wiredtiger/test/evergreen.yml: 223
-src/third_party/wiredtiger/src/include/wiredtiger.in: 220
-...
-```
-
-For large repositories, you may wish to only look at part of the repository, we can add a
-filter in our aggregation to do just that (you can use the `--prefix` option from the command line
-to include this).
-
-```
-[
-    {
-        $match: {
-            date: {$gt: ISODate("2020-01-01")},
-        },
-    },
-    {
-        $unwind: {
-            path: "$files",
-        },
-    },
-    {
-        $match: {
-            "files.filename": {
-                $regex: "^src/mongo/db",
-            }
-        }
-    },
-    {
-        $sortByCount: "$files.filename",
-    },
-]
-```
-
-### File coupling
-
-Once we are aware of an active file, we might want to see how other files are coupled to it. We can
-use the following aggregation to gather that data:
-
-```
-[
-    { 
-        "$match": { 
-            "date": {"$gt": ISODate("2020-01-01")}, 
-            "files.filename": "src/mongo/db/repl/replication_coordinator_impl.cpp" 
-        } 
-    },
-    { 
-        "$facet": { 
-            "total_commits": [{ "$count": "commit" }], 
-            "seen_with": [
-                { 
-                    "$unwind": { "path": "$files" } 
-                }, 
-                { 
-                    "$match": { 
-                        "files.filename": { "$ne": "src/mongo/db/repl/replication_coordinator_impl.cpp" } 
-                    } 
-                }, 
-                { 
-                    "$group": {
-                        "_id": "$files.filename", 
-                        "count": { "$sum": 1 } 
-                    } 
-                }, 
-                { 
-                    "$sort": { "count": -1 } 
-                }
-            ] 
-        } 
-    },
-]
-```
-
-We can use the command line `file-coupling` subcommand to perform this aggregation:
-
-```bash
-$ mdb-code-insights --config-file config.yml file-coupling --since "2020-01-01" --filename src/mongo/db/repl/replication_coordinator_impl.cpp
-src/mongo/db/repl/replication_coordinator_impl.cpp: 309 instances
-
- - src/mongo/db/repl/replication_coordinator_impl.h: 91: 29.45%
- - src/mongo/db/repl/replication_coordinator_mock.cpp: 63: 20.39%
- - src/mongo/embedded/replication_coordinator_embedded.cpp: 62: 20.06%
- - src/mongo/db/repl/replication_coordinator_mock.h: 61: 19.74%
- - src/mongo/embedded/replication_coordinator_embedded.h: 60: 19.42%
- - src/mongo/db/repl/replication_coordinator_noop.h: 60: 19.42%
- - src/mongo/db/repl/replication_coordinator_noop.cpp: 60: 19.42%
- - src/mongo/db/repl/replication_coordinator.h: 59: 19.09%
- - src/mongo/db/repl/topology_coordinator.cpp: 57: 18.45%
- - src/mongo/db/repl/replication_coordinator_impl_test.cpp: 51: 16.50%
- - src/mongo/db/repl/replication_coordinator_impl_heartbeat.cpp: 47: 15.21%
- ...
-```
-
-### File ownership
-
-It can also be useful to check if a file has a clear owner. We can use the following aggregation
-to check who has been changing a file the most:
-
-```
-[
-    { 
-        $match: { date: { $gt: ISODate("2020-01-01") } } 
-    },
-    { 
-        $unwind: { path: "$files" } 
-    },
-    { 
-        $match: { "files.filename": "src/mongo/db/repl/replication_coordinator_impl.cpp" } 
-    },
-    {
-        $sortByCount: "$author" 
-    },
-]
-```
-
-Again we can use the command line tool to perform this aggregation with the `file-ownership`
-subcommand:
-
-```bash
-$ mdb-code-insights --config-file config.yml file-ownership --since "2020-01-01" --filename src/mongo/db/repl/replication_coordinator_impl.cpp 
-Owners of src/mongo/db/repl/replication_coordinator_impl.cpp: 309 total changes
-William Schultz: 23 (7.44%)
-Lingzhi Deng: 17 (5.50%)
-Pavi Vetriselvan: 17 (5.50%)
-A. Jesse Jiryu Davis: 16 (5.18%)
-Jason Chan: 15 (4.85%)
-Matthew Russotto: 15 (4.85%)
-Vesselina Ratcheva: 14 (4.53%)
-...
-```
-
-## Using Charts
-
-If you load the commit data into an Atlas cluster, you can then use Charts to quickly build some
-visualizations of your commit data.
-
-### File activity with Charts
-
-We previously showed how to use an aggregation to find files that are changing the most. Using
-charts we can get a more visual representation of that data.
-
-```
-Chart Type: Bar / Stacked
-X Axis: commit
-    Aggregate: Count
-Y Axis: files.filename 
-    Array Reductions: Unwind Array
-    Sort By: Value
-    Limit Results: 30
-Series: date
-    Binning: Month
+SUBCOMMANDS:
+    file-activity       Generate a report on the most active files
+    file-coupling       Generate a report on file-coupling for the given file
+    file-ownership      Generate a report on the author ownership of the given file
+    files-per-commit    Generate a report on the average number of files per commit by author
+    help                Print this message or the help of the given subcommand(s)
+    load                Load data from git into a mongo instance
 ```
 
 ## Inspiration
