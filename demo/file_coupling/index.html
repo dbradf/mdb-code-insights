@@ -5,12 +5,12 @@
 <meta name="referrer" content="no-referrer" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="color-scheme" content="light dark" />
-<meta name="generator" content="Hugo 0.92.1" />
+<meta name="generator" content="Hugo 0.99.1" />
 
 
   <meta name="description" content="Before performing this analysis, you will want to have a active file to target  From the previous step, we decided to target the file src/mongo/db/repl/replication_coordinator_impl.cpp and see how it is coupled to other files in the repository.
 Using an aggregation     We can analyze the file coupling with the following aggregation:
-[ { &quot;$match&quot;: { &quot;date&quot;: {&quot;$gt&quot;: ISODate(&quot;2020-01-01&quot;)}, &quot;files.filename&quot;: &quot;src/mongo/db/repl/replication_coordinator_impl.cpp&quot; } }, { &quot;$facet&quot;: { &quot;total_commits&quot;: [{ &quot;$count&quot;: &quot;commit&quot; }], &quot;seen_with&quot;: [ { &quot;$unwind&quot;: { &quot;path&quot;: &quot;$files&quot; } }, { &quot;$match&quot;: { &quot;files." />
+[ { &#34;$match&#34;: { &#34;date&#34;: {&#34;$gt&#34;: ISODate(&#34;2020-01-01&#34;)}, &#34;files.filename&#34;: &#34;src/mongo/db/repl/replication_coordinator_impl.cpp&#34; } }, { &#34;$facet&#34;: { &#34;total_commits&#34;: [{ &#34;$count&#34;: &#34;commit&#34; }], &#34;seen_with&#34;: [ { &#34;$unwind&#34;: { &#34;path&#34;: &#34;$files&#34; } }, { &#34;$match&#34;: { &#34;files." />
 
     <title>File Coupling | MDB Code Insights | Documentation</title>
 
@@ -856,31 +856,31 @@ and see how it is coupled to other files in the repository.</p>
 <p>We can analyze the file coupling with the following aggregation:</p>
 <pre tabindex="0"><code>[
     { 
-        &quot;$match&quot;: { 
-            &quot;date&quot;: {&quot;$gt&quot;: ISODate(&quot;2020-01-01&quot;)}, 
-            &quot;files.filename&quot;: &quot;src/mongo/db/repl/replication_coordinator_impl.cpp&quot; 
+        &#34;$match&#34;: { 
+            &#34;date&#34;: {&#34;$gt&#34;: ISODate(&#34;2020-01-01&#34;)}, 
+            &#34;files.filename&#34;: &#34;src/mongo/db/repl/replication_coordinator_impl.cpp&#34; 
         } 
     },
     { 
-        &quot;$facet&quot;: { 
-            &quot;total_commits&quot;: [{ &quot;$count&quot;: &quot;commit&quot; }], 
-            &quot;seen_with&quot;: [
+        &#34;$facet&#34;: { 
+            &#34;total_commits&#34;: [{ &#34;$count&#34;: &#34;commit&#34; }], 
+            &#34;seen_with&#34;: [
                 { 
-                    &quot;$unwind&quot;: { &quot;path&quot;: &quot;$files&quot; } 
+                    &#34;$unwind&#34;: { &#34;path&#34;: &#34;$files&#34; } 
                 }, 
                 { 
-                    &quot;$match&quot;: { 
-                        &quot;files.filename&quot;: { &quot;$ne&quot;: &quot;src/mongo/db/repl/replication_coordinator_impl.cpp&quot; } 
+                    &#34;$match&#34;: { 
+                        &#34;files.filename&#34;: { &#34;$ne&#34;: &#34;src/mongo/db/repl/replication_coordinator_impl.cpp&#34; } 
                     } 
                 }, 
                 { 
-                    &quot;$group&quot;: {
-                        &quot;_id&quot;: &quot;$files.filename&quot;, 
-                        &quot;count&quot;: { &quot;$sum&quot;: 1 } 
+                    &#34;$group&#34;: {
+                        &#34;_id&#34;: &#34;$files.filename&#34;, 
+                        &#34;count&#34;: { &#34;$sum&#34;: 1 } 
                     } 
                 }, 
                 { 
-                    &quot;$sort&quot;: { &quot;count&quot;: -1 } 
+                    &#34;$sort&#34;: { &#34;count&#34;: -1 } 
                 }
             ] 
         } 
@@ -895,22 +895,22 @@ and see how it is coupled to other files in the repository.</p>
     </h2>
 </div>
 <p>We can also use the <code>file-coupling</code> subcommand to perform this aggregation:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash">mdb-code-insights --config-file config.yml file-coupling --since <span class="s2">&#34;2020-01-01&#34;</span> --filename src/mongo/db/repl/replication_coordinator_impl.cpp
-</code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash">src/mongo/db/repl/replication_coordinator_impl.cpp: <span class="m">309</span> instances
-
- - src/mongo/db/repl/replication_coordinator_impl.h: 91: 29.45%
- - src/mongo/db/repl/replication_coordinator_mock.cpp: 63: 20.39%
- - src/mongo/embedded/replication_coordinator_embedded.cpp: 62: 20.06%
- - src/mongo/db/repl/replication_coordinator_mock.h: 61: 19.74%
- - src/mongo/embedded/replication_coordinator_embedded.h: 60: 19.42%
- - src/mongo/db/repl/replication_coordinator_noop.h: 60: 19.42%
- - src/mongo/db/repl/replication_coordinator_noop.cpp: 60: 19.42%
- - src/mongo/db/repl/replication_coordinator.h: 59: 19.09%
- - src/mongo/db/repl/topology_coordinator.cpp: 57: 18.45%
- - src/mongo/db/repl/replication_coordinator_impl_test.cpp: 51: 16.50%
- - src/mongo/db/repl/replication_coordinator_impl_heartbeat.cpp: 47: 15.21%
- ...
-</code></pre></div><p>From the output, a lot of the files look to be related to the file we are analyzing. Most of them
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mdb-code-insights --config-file config.yml file-coupling --since <span class="s2">&#34;2020-01-01&#34;</span> --filename src/mongo/db/repl/replication_coordinator_impl.cpp
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">src/mongo/db/repl/replication_coordinator_impl.cpp: <span class="m">309</span> instances
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> - src/mongo/db/repl/replication_coordinator_impl.h: 91: 29.45%
+</span></span><span class="line"><span class="cl"> - src/mongo/db/repl/replication_coordinator_mock.cpp: 63: 20.39%
+</span></span><span class="line"><span class="cl"> - src/mongo/embedded/replication_coordinator_embedded.cpp: 62: 20.06%
+</span></span><span class="line"><span class="cl"> - src/mongo/db/repl/replication_coordinator_mock.h: 61: 19.74%
+</span></span><span class="line"><span class="cl"> - src/mongo/embedded/replication_coordinator_embedded.h: 60: 19.42%
+</span></span><span class="line"><span class="cl"> - src/mongo/db/repl/replication_coordinator_noop.h: 60: 19.42%
+</span></span><span class="line"><span class="cl"> - src/mongo/db/repl/replication_coordinator_noop.cpp: 60: 19.42%
+</span></span><span class="line"><span class="cl"> - src/mongo/db/repl/replication_coordinator.h: 59: 19.09%
+</span></span><span class="line"><span class="cl"> - src/mongo/db/repl/topology_coordinator.cpp: 57: 18.45%
+</span></span><span class="line"><span class="cl"> - src/mongo/db/repl/replication_coordinator_impl_test.cpp: 51: 16.50%
+</span></span><span class="line"><span class="cl"> - src/mongo/db/repl/replication_coordinator_impl_heartbeat.cpp: 47: 15.21%
+</span></span><span class="line"><span class="cl"> ...
+</span></span></code></pre></div><p>From the output, a lot of the files look to be related to the file we are analyzing. Most of them
 look like tests or header files that we would expect to be closely related. However, the
 <code>src/mongo/db/repl/topology_coordinator.cpp</code> file seems to stand out. This file seems to change
 along with the given file more frequently than the unit tests for that file. That might be something

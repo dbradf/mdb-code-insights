@@ -5,7 +5,7 @@
 <meta name="referrer" content="no-referrer" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="color-scheme" content="light dark" />
-<meta name="generator" content="Hugo 0.92.1" />
+<meta name="generator" content="Hugo 0.99.1" />
 
 
   <meta name="description" content="There are a few pieces of information needed to run the tool. These can be provided via command line arguments or with a configuration file.
@@ -848,8 +848,8 @@ command line arguments or with a configuration file.</p>
 <p>All three options mentioned can be provided as command line options (see <code>mdb-code-insights --help</code>
 for details). They should be specified before the subcommand is given.</p>
 <p>For example,</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash">mdb-code-insights --mongo-uri <span class="s2">&#34;mongodb://localhost:27017&#34;</span> --database <span class="s2">&#34;code_insights&#34;</span> --collection <span class="s2">&#34;my_repo&#34;</span> load ...
-</code></pre></div><div class="gdoc-page__anchorwrap">
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mdb-code-insights --mongo-uri <span class="s2">&#34;mongodb://localhost:27017&#34;</span> --database <span class="s2">&#34;code_insights&#34;</span> --collection <span class="s2">&#34;my_repo&#34;</span> load ...
+</span></span></code></pre></div><div class="gdoc-page__anchorwrap">
     <h2 id="configuration-file-configuration">
         Configuration file configuration
         <a data-clipboard-text="https://dbradf.github.io/mdb-code-insights/getting_started/configuration/#configuration-file-configuration" class="gdoc-page__anchor gdoc-page__anchor--right clip" title="Anchor to: Configuration file configuration" aria-label="Anchor to: Configuration file configuration" href="#configuration-file-configuration">
@@ -859,12 +859,12 @@ for details). They should be specified before the subcommand is given.</p>
 </div>
 <p>If you prefer, you can store the configuration options in a YAML file and provide that to the tool.</p>
 <p>The YAML file should look like the following:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">mongo_uri</span><span class="p">:</span><span class="w"> </span><span class="l">mongodb://localhost:27017</span><span class="w">
-</span><span class="w"></span><span class="nt">database</span><span class="p">:</span><span class="w"> </span><span class="l">code_insights</span><span class="w">
-</span><span class="w"></span><span class="nt">collection</span><span class="p">:</span><span class="w"> </span><span class="l">mongo</span><span class="w">
-</span></code></pre></div><p>The <code>--config-file</code> option can be used to specify the file to use:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash">mdb-code-insights --config-file config.yml load ...
-</code></pre></div>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">mongo_uri</span><span class="p">:</span><span class="w"> </span><span class="l">mongodb://localhost:27017</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">database</span><span class="p">:</span><span class="w"> </span><span class="l">code_insights</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">collection</span><span class="p">:</span><span class="w"> </span><span class="l">mongo</span><span class="w">
+</span></span></span></code></pre></div><p>The <code>--config-file</code> option can be used to specify the file to use:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mdb-code-insights --config-file config.yml load ...
+</span></span></code></pre></div>
   </article>
 
 

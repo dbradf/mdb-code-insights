@@ -5,7 +5,7 @@
 <meta name="referrer" content="no-referrer" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="color-scheme" content="light dark" />
-<meta name="generator" content="Hugo 0.92.1" />
+<meta name="generator" content="Hugo 0.99.1" />
 
 
   <meta name="description" content="Before performing this analysis, you will want to have a active file to target  One interesting view of a file is who has been making changes to it. This can be particularly useful when there are questions about the file or changes to it that need to be reviewed. We can analyze the file ownership to determine who has made the most changes to a file.
@@ -854,16 +854,16 @@ analyze the file ownership to determine who has made the most changes to a file.
 <p>We can analyze the file ownership with the following aggregation:</p>
 <pre tabindex="0"><code>[
     { 
-        $match: { date: { $gt: ISODate(&quot;2020-01-01&quot;) } } 
+        $match: { date: { $gt: ISODate(&#34;2020-01-01&#34;) } } 
     },
     { 
-        $unwind: { path: &quot;$files&quot; } 
+        $unwind: { path: &#34;$files&#34; } 
     },
     { 
-        $match: { &quot;files.filename&quot;: &quot;src/mongo/db/repl/replication_coordinator_impl.cpp&quot; } 
+        $match: { &#34;files.filename&#34;: &#34;src/mongo/db/repl/replication_coordinator_impl.cpp&#34; } 
     },
     {
-        $sortByCount: &quot;$author&quot; 
+        $sortByCount: &#34;$author&#34; 
     },
 ]
 </code></pre><div class="gdoc-page__anchorwrap">
@@ -875,8 +875,8 @@ analyze the file ownership to determine who has made the most changes to a file.
     </h2>
 </div>
 <p>We can also use the <code>file-ownership</code> subcommand to perform this aggregation:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash">mdb-code-insights --config-file config.yml file-ownership --since <span class="s2">&#34;2020-01-01&#34;</span> --filename src/mongo/db/repl/replication_coordinator_impl.cpp 
-</code></pre></div><pre tabindex="0"><code>Owners of src/mongo/db/repl/replication_coordinator_impl.cpp: 309 total changes
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mdb-code-insights --config-file config.yml file-ownership --since <span class="s2">&#34;2020-01-01&#34;</span> --filename src/mongo/db/repl/replication_coordinator_impl.cpp 
+</span></span></code></pre></div><pre tabindex="0"><code>Owners of src/mongo/db/repl/replication_coordinator_impl.cpp: 309 total changes
 William Schultz: 23 (7.44%)
 Lingzhi Deng: 17 (5.50%)
 Pavi Vetriselvan: 17 (5.50%)

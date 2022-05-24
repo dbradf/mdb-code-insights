@@ -5,7 +5,7 @@
 <meta name="referrer" content="no-referrer" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="color-scheme" content="light dark" />
-<meta name="generator" content="Hugo 0.92.1" />
+<meta name="generator" content="Hugo 0.99.1" />
 
 
   <meta name="description" content="Before starting this demo, before to have the prerequisites installed as described in the intro.  The first thing we need to do is load data from our git repository into our MongoDB instance. This is done with the load subcommand. You will need a local copy of the git repository you wish to analyze before starting. For the demo, we will assume that the repo has been cloned to $HOME/repos/mongo." />
@@ -859,14 +859,14 @@ gathered. Additionally, if you have a job running the tool on a regular basis to
 up to date, this option can be used to only look at new git data.</li>
 </ul>
 <p>We can load the last few years of git data from the mongo repository with:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash">mdb-code-insights --config-file config.yml load --after-date 2018-01-01 --repo-dir <span class="nv">$HOME</span>/repos/mongo
-</code></pre></div><p>Depending on how much git data is being collected, the command could take a few minutes to run. Once
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mdb-code-insights --config-file config.yml load --after-date 2018-01-01 --repo-dir <span class="nv">$HOME</span>/repos/mongo
+</span></span></code></pre></div><p>Depending on how much git data is being collected, the command could take a few minutes to run. Once
 it has completed, the output should look something like this:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash">$ target/release/mdb-code-insights --config-file config.yml load --after-date 2018-01-01 --repo-dir <span class="nv">$HOME</span>/repos/mongo
-Create data in: 38156ms
-Loaded <span class="m">24994</span> commits!
-Sent data to mongo in: 2170ms
-</code></pre></div><p>If you now look at your mongo instance, the git data should be available to explore.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ target/release/mdb-code-insights --config-file config.yml load --after-date 2018-01-01 --repo-dir <span class="nv">$HOME</span>/repos/mongo
+</span></span><span class="line"><span class="cl">Create data in: 38156ms
+</span></span><span class="line"><span class="cl">Loaded <span class="m">24994</span> commits!
+</span></span><span class="line"><span class="cl">Sent data to mongo in: 2170ms
+</span></span></code></pre></div><p>If you now look at your mongo instance, the git data should be available to explore.</p>
 <div class="gdoc-page__anchorwrap">
     <h2 id="next-steps">
         Next Steps

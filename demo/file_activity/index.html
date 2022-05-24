@@ -5,7 +5,7 @@
 <meta name="referrer" content="no-referrer" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="color-scheme" content="light dark" />
-<meta name="generator" content="Hugo 0.92.1" />
+<meta name="generator" content="Hugo 0.99.1" />
 
 
   <meta name="description" content="Before performing this analysis, before you have some data loaded from a git repository  Now that we have some data in our mongo instance, lets start analyzing it. A useful place to start it to see which files have been changed the most. Files that change frequently are more likely to contain bugs or be bottlenecks in the development process.
@@ -855,16 +855,16 @@ contain bugs or be bottlenecks in the development process.</p>
 <pre tabindex="0"><code>[
     {
         $match: {
-            date: {$gt: ISODate(&quot;2020-01-01&quot;)},
+            date: {$gt: ISODate(&#34;2020-01-01&#34;)},
         },
     },
     {
         $unwind: {
-            path: &quot;$files&quot;,
+            path: &#34;$files&#34;,
         },
     },
     {
-        $sortByCount: &quot;$files.filename&quot;,
+        $sortByCount: &#34;$files.filename&#34;,
     },
 ]
 </code></pre><div class="gdoc-page__anchorwrap">
@@ -876,18 +876,18 @@ contain bugs or be bottlenecks in the development process.</p>
     </h2>
 </div>
 <p>We can also use the <code>file-activity</code> subcommand to run this aggregation:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash">mdb-code-insights --config-file config.yml file-activity --since 2020-01-01
-</code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash">src/third_party/wiredtiger/import.data: <span class="m">1335</span>
-etc/evergreen.yml: <span class="m">892</span>
-src/mongo/db/SConscript: <span class="m">354</span>
-src/mongo/db/repl/replication_coordinator_impl.cpp: <span class="m">309</span>
-src/mongo/db/s/SConscript: <span class="m">299</span>
-src/mongo/db/repl/SConscript: <span class="m">245</span>
-SConstruct: <span class="m">226</span>
-src/third_party/wiredtiger/test/evergreen.yml: <span class="m">223</span>
-src/third_party/wiredtiger/src/include/wiredtiger.in: <span class="m">220</span>
-...
-</code></pre></div><p>Looking at the output, the first source code file that show up is <code>src/mongo/db/repl/replication_coordinator_impl.cpp</code>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mdb-code-insights --config-file config.yml file-activity --since 2020-01-01
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">src/third_party/wiredtiger/import.data: <span class="m">1335</span>
+</span></span><span class="line"><span class="cl">etc/evergreen.yml: <span class="m">892</span>
+</span></span><span class="line"><span class="cl">src/mongo/db/SConscript: <span class="m">354</span>
+</span></span><span class="line"><span class="cl">src/mongo/db/repl/replication_coordinator_impl.cpp: <span class="m">309</span>
+</span></span><span class="line"><span class="cl">src/mongo/db/s/SConscript: <span class="m">299</span>
+</span></span><span class="line"><span class="cl">src/mongo/db/repl/SConscript: <span class="m">245</span>
+</span></span><span class="line"><span class="cl">SConstruct: <span class="m">226</span>
+</span></span><span class="line"><span class="cl">src/third_party/wiredtiger/test/evergreen.yml: <span class="m">223</span>
+</span></span><span class="line"><span class="cl">src/third_party/wiredtiger/src/include/wiredtiger.in: <span class="m">220</span>
+</span></span><span class="line"><span class="cl">...
+</span></span></code></pre></div><p>Looking at the output, the first source code file that show up is <code>src/mongo/db/repl/replication_coordinator_impl.cpp</code>
 with 309 changes.  We will use this file for future exploration.</p>
 <div class="gdoc-page__anchorwrap">
     <h2 id="whats-next">

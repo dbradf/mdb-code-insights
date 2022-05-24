@@ -33,7 +33,7 @@ Using an aggregation     We can use the following aggregation to find frequently
       <guid>https://dbradf.github.io/mdb-code-insights/demo/file_coupling/</guid>
       <description>Before performing this analysis, you will want to have a active file to target  From the previous step, we decided to target the file src/mongo/db/repl/replication_coordinator_impl.cpp and see how it is coupled to other files in the repository.
 Using an aggregation     We can analyze the file coupling with the following aggregation:
-[ { &amp;quot;$match&amp;quot;: { &amp;quot;date&amp;quot;: {&amp;quot;$gt&amp;quot;: ISODate(&amp;quot;2020-01-01&amp;quot;)}, &amp;quot;files.filename&amp;quot;: &amp;quot;src/mongo/db/repl/replication_coordinator_impl.cpp&amp;quot; } }, { &amp;quot;$facet&amp;quot;: { &amp;quot;total_commits&amp;quot;: [{ &amp;quot;$count&amp;quot;: &amp;quot;commit&amp;quot; }], &amp;quot;seen_with&amp;quot;: [ { &amp;quot;$unwind&amp;quot;: { &amp;quot;path&amp;quot;: &amp;quot;$files&amp;quot; } }, { &amp;quot;$match&amp;quot;: { &amp;quot;files.</description>
+[ { &amp;#34;$match&amp;#34;: { &amp;#34;date&amp;#34;: {&amp;#34;$gt&amp;#34;: ISODate(&amp;#34;2020-01-01&amp;#34;)}, &amp;#34;files.filename&amp;#34;: &amp;#34;src/mongo/db/repl/replication_coordinator_impl.cpp&amp;#34; } }, { &amp;#34;$facet&amp;#34;: { &amp;#34;total_commits&amp;#34;: [{ &amp;#34;$count&amp;#34;: &amp;#34;commit&amp;#34; }], &amp;#34;seen_with&amp;#34;: [ { &amp;#34;$unwind&amp;#34;: { &amp;#34;path&amp;#34;: &amp;#34;$files&amp;#34; } }, { &amp;#34;$match&amp;#34;: { &amp;#34;files.</description>
     </item>
     
     <item>
