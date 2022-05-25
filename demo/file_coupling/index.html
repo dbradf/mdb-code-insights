@@ -61,7 +61,7 @@ Using an aggregation     We can analyze the file coupling with the following agg
       "url" : "https://dbradf.github.io/mdb-code-insights/demo/file_coupling/",
       "headline": "File Coupling",
       "description": "Before performing this analysis, you will want to have a active file to target  From the previous step, we decided to target the file src\/mongo\/db\/repl\/replication_coordinator_impl.cpp and see how it is coupled to other files in the repository.\nUsing an aggregation     We can analyze the file coupling with the following aggregation:\n[ { \u0022$match\u0022: { \u0022date\u0022: {\u0022$gt\u0022: ISODate(\u00222020-01-01\u0022)}, \u0022files.filename\u0022: \u0022src\/mongo\/db\/repl\/replication_coordinator_impl.cpp\u0022 } }, { \u0022$facet\u0022: { \u0022total_commits\u0022: [{ \u0022$count\u0022: \u0022commit\u0022 }], \u0022seen_with\u0022: [ { \u0022$unwind\u0022: { \u0022path\u0022: \u0022$files\u0022 } }, { \u0022$match\u0022: { \u0022files.",
-      "wordCount" : "271",
+      "wordCount" : "256",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
       "mainEntityOfPage": {
@@ -874,14 +874,8 @@ and see how it is coupled to other files in the repository.</p>
                     } 
                 }, 
                 { 
-                    &#34;$group&#34;: {
-                        &#34;_id&#34;: &#34;$files.filename&#34;, 
-                        &#34;count&#34;: { &#34;$sum&#34;: 1 } 
-                    } 
-                }, 
-                { 
-                    &#34;$sort&#34;: { &#34;count&#34;: -1 } 
-                }
+                    &#34;$sortByCount&#34;: &#34;$files.filename&#34;
+                },
             ] 
         } 
     },
