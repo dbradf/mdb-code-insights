@@ -33,14 +33,8 @@ We can analyze the file coupling with the following aggregation:
                     } 
                 }, 
                 { 
-                    "$group": {
-                        "_id": "$files.filename", 
-                        "count": { "$sum": 1 } 
-                    } 
-                }, 
-                { 
-                    "$sort": { "count": -1 } 
-                }
+                    "$sortByCount": "$files.filename"
+                },
             ] 
         } 
     },

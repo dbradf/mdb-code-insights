@@ -171,16 +171,8 @@ impl MongoInstance {
                             "$match": {"files.filename": {"$ne": filename}}
                         },
                         {
-                            "$group": {
-                                "_id": "$files.filename",
-                                "count": {"$sum": 1}
-                            }
+                            "$sortByCount": "$files.filename"
                         },
-                        {
-                            "$sort": {
-                                "count": -1
-                            }
-                        }
                     ],
                 }
             },

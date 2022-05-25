@@ -29,3 +29,19 @@ jobs:
 
       - name: Test
         run: cargo test
+
+  version_check:
+    runs-on: ubuntu-latest
+    name: Version Update Check
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+      - name: Install check tool
+        run: |
+        wget -q https://github.com/dbradf/pypi-version-check/releases/download/v0.3.0/pypi-version-check
+        chmod +x pypi-version-check
+
+      - name: Check Version
+        run: |
+          ./pypi-version-check --publish-type github-release --package-type rust --check-changelog
