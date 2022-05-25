@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.4 - 2022-05-25
+
+- Simplify file-coupling aggregation.
+
 ## 0.1.3 - 2022-05-24
 
 - Improve usage documentation.
