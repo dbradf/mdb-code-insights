@@ -39,8 +39,8 @@ jobs:
       
       - name: Install check tool
         run: |
-        wget -q https://github.com/dbradf/pypi-version-check/releases/download/v0.3.0/pypi-version-check
-        chmod +x pypi-version-check
+          wget -q https://github.com/dbradf/pypi-version-check/releases/download/v0.3.0/pypi-version-check
+          chmod +x pypi-version-check
 
       - name: Check Version
         run: |
