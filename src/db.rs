@@ -186,13 +186,13 @@ impl MongoInstance {
         filename: &str,
         since_date: Option<&DateTime<Utc>>,
     ) -> Result<Vec<FileOwnership>> {
-        let mut pipeline = create_filter(since_date, None);
-        pipeline.push(doc! {
-            "$match": {"files.filename": filename}
-        });
-        pipeline.push(doc! {
-            "$sortByCount": "$author"
-        });
+        let pipeline = [
+            doc! { "$match": {
+                "date": {"$gt": since_date},
+                "files.filename": filename,
+            }},
+            doc! {"$sortByCount": "$author"},
+        ];
 
         self.aggregate(pipeline).await
     }

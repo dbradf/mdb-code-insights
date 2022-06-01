@@ -16,13 +16,10 @@ We can analyze the file ownership with the following aggregation:
 ```
 [
     { 
-        $match: { date: { $gt: ISODate("2020-01-01") } } 
-    },
-    { 
-        $unwind: { path: "$files" } 
-    },
-    { 
-        $match: { "files.filename": "src/mongo/db/repl/replication_coordinator_impl.cpp" } 
+        $match: { 
+            date: { $gt: ISODate("2020-01-01") },
+            "files.filename": "src/mongo/db/repl/replication_coordinator_impl.cpp", 
+        } 
     },
     {
         $sortByCount: "$author" 

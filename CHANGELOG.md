@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.5 - 2022-06-01
+
+- Simplify more aggregations.
+- Add references section to documentation.
+
 ## 0.1.4 - 2022-05-25
 
 - Simplify file-coupling aggregation.
