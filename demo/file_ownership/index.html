@@ -58,7 +58,7 @@ Using an aggregation     We can analyze the file ownership with the following ag
       "url" : "https://dbradf.github.io/mdb-code-insights/demo/file_ownership/",
       "headline": "File Ownership",
       "description": "Before performing this analysis, you will want to have a active file to target  One interesting view of a file is who has been making changes to it. This can be particularly useful when there are questions about the file or changes to it that need to be reviewed. We can analyze the file ownership to determine who has made the most changes to a file.\nUsing an aggregation     We can analyze the file ownership with the following aggregation:",
-      "wordCount" : "244",
+      "wordCount" : "232",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
       "mainEntityOfPage": {
@@ -742,6 +742,192 @@ Using an aggregation     We can analyze the file ownership with the following ag
         
       
     
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
+                    href="/mdb-code-insights/reference/"
+                    class="gdoc-nav__entry"
+                  >
+                    Reference
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+              
+  
+
+
+  <ul class="gdoc-nav__list">
+    
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
+                    href="/mdb-code-insights/reference/books/"
+                    class="gdoc-nav__entry"
+                  >
+                    Books
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
+                    href="/mdb-code-insights/reference/academic_papers/"
+                    class="gdoc-nav__entry"
+                  >
+                    Academic Papers
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
+      
+
+      
+        
+      
+
+      
+        
+          
+          
+          
+          
+          
+          
+
+
+          <li>
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              
+                <span class="flex">
+                  <a
+                    href="/mdb-code-insights/reference/presentations/"
+                    class="gdoc-nav__entry"
+                  >
+                    Presentations
+                  </a>
+                </span>
+              
+              
+            </label>
+
+            
+          </li>
+        
+      
+    
+  </ul>
+
+            
+          </li>
+        
+      
+    
   </ul>
 
 
@@ -854,13 +1040,10 @@ analyze the file ownership to determine who has made the most changes to a file.
 <p>We can analyze the file ownership with the following aggregation:</p>
 <pre tabindex="0"><code>[
     { 
-        $match: { date: { $gt: ISODate(&#34;2020-01-01&#34;) } } 
-    },
-    { 
-        $unwind: { path: &#34;$files&#34; } 
-    },
-    { 
-        $match: { &#34;files.filename&#34;: &#34;src/mongo/db/repl/replication_coordinator_impl.cpp&#34; } 
+        $match: { 
+            date: { $gt: ISODate(&#34;2020-01-01&#34;) },
+            &#34;files.filename&#34;: &#34;src/mongo/db/repl/replication_coordinator_impl.cpp&#34;, 
+        } 
     },
     {
         $sortByCount: &#34;$author&#34; 

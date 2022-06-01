@@ -27,6 +27,15 @@
     
     <item>
       <title></title>
+      <link>https://dbradf.github.io/mdb-code-insights/reference/books/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://dbradf.github.io/mdb-code-insights/reference/books/</guid>
+      <description> Your code as a Crime Scene: Inspiration for this project, covers a variety of ways of analyzing software projects. Software Design X-Rays: A follow up to &amp;lsquo;Your code as a Crime Scene&amp;rsquo; by the same author. It covers more approaches to software analysis.  </description>
+    </item>
+    
+    <item>
+      <title></title>
       <link>https://dbradf.github.io/mdb-code-insights/demo/file_activity/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
@@ -48,6 +57,15 @@ The required details are:
     
     <item>
       <title></title>
+      <link>https://dbradf.github.io/mdb-code-insights/reference/academic_papers/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://dbradf.github.io/mdb-code-insights/reference/academic_papers/</guid>
+      <description>T. L. Graves, A. F. Karr, J. S. Marron and H. Siy, &amp;ldquo;Predicting fault incidence using software change history,&amp;rdquo; in IEEE Transactions on Software Engineering, vol. 26, no. 7, pp. 653-661, July 2000, doi: 10.1109/32.859533. Keisuke Hotta, Yui Sasaki, Yukiko Sano, Yoshiki Higo, and Shinji Kusumoto. 2012. An empirical study on the impact of duplicate code. Adv. Soft. Eng. 2012, Article 5 (January 2012), 1 pages. https://doi.org/10.1155/2012/938296 Thomas J. Ostrand, Elaine J.</description>
+    </item>
+    
+    <item>
+      <title></title>
       <link>https://dbradf.github.io/mdb-code-insights/demo/file_coupling/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
@@ -55,6 +73,15 @@ The required details are:
       <description>Before performing this analysis, you will want to have a active file to target  From the previous step, we decided to target the file src/mongo/db/repl/replication_coordinator_impl.cpp and see how it is coupled to other files in the repository.
 Using an aggregation     We can analyze the file coupling with the following aggregation:
 [ { &amp;#34;$match&amp;#34;: { &amp;#34;date&amp;#34;: {&amp;#34;$gt&amp;#34;: ISODate(&amp;#34;2020-01-01&amp;#34;)}, &amp;#34;files.filename&amp;#34;: &amp;#34;src/mongo/db/repl/replication_coordinator_impl.cpp&amp;#34; } }, { &amp;#34;$facet&amp;#34;: { &amp;#34;total_commits&amp;#34;: [{ &amp;#34;$count&amp;#34;: &amp;#34;commit&amp;#34; }], &amp;#34;seen_with&amp;#34;: [ { &amp;#34;$unwind&amp;#34;: { &amp;#34;path&amp;#34;: &amp;#34;$files&amp;#34; } }, { &amp;#34;$match&amp;#34;: { &amp;#34;files.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://dbradf.github.io/mdb-code-insights/reference/presentations/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://dbradf.github.io/mdb-code-insights/reference/presentations/</guid>
+      <description>Presentation from MongoDB World 2022</description>
     </item>
     
     <item>
