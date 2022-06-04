@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.6 - 2022-06-04
+
+- Use full timestamps from git log.
+
 ## 0.1.5 - 2022-06-01
 
 - Simplify more aggregations.

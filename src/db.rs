@@ -107,9 +107,7 @@ impl MongoInstance {
         if let Err(error) = &result {
             if let ErrorKind::BulkWrite(bulk_write_failures) = &error.kind.as_ref() {
                 if let Some(failure_list) = &bulk_write_failures.write_errors {
-                    if !failure_list
-                        .iter()
-                        .any(|f| f.code != DUPLICATE_KEY_ERR) {
+                    if !failure_list.iter().any(|f| f.code != DUPLICATE_KEY_ERR) {
                         return Ok(());
                     }
                 }

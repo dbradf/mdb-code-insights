@@ -1,6 +1,6 @@
 [package]
 name = "mdb-code-insights"
-version = "0.1.5"
+version = "0.1.6"
 edition = "2021"
 authors = ["David Bradford"]
 license = "Apache-2.0"
@@ -12,7 +12,7 @@ anyhow = "1.0"
 clap = {version = '3.1', features = ["derive"]}
 chrono = {version = "0.4", features = ["serde"]}
 futures = "0.3"
-mongodb = {version = "2.1"}
+mongodb = {version = "2.2"}
 bson = {version = "2.2", features = ["chrono-0_4"]}
 serde = {version = "1.0", features = ["derive"]}
 serde_yaml = "0.8"

@@ -81,7 +81,9 @@ impl CommandType {
                             let parts: Vec<&str> = line.split("--").collect();
                             current_commit = Some(GitCommit {
                                 commit: parts[1].to_string(),
-                                date: iso_date_to_datetime(parts[2]),
+                                date: DateTime::parse_from_rfc3339(parts[2])
+                                    .unwrap()
+                                    .with_timezone(&Utc),
                                 author: parts[3].to_string(),
                                 summary: parts[4].to_string(),
                                 files: vec![],

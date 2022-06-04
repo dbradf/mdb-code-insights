@@ -23,7 +23,7 @@ impl GitProxy {
             .args([
                 "log",
                 "--numstat",
-                "--date=short",
+                "--date=iso-strict",
                 "--pretty=format:--%h--%cd--%aN--%s",
                 "--no-renames",
                 "--after",
@@ -32,10 +32,6 @@ impl GitProxy {
             .current_dir(dir)
             .stdout(Stdio::piped())
             .spawn()?;
-        // run_fun!(
-        //     cd $dir;
-        //     git log --numstat --date=short --pretty=format:"--%h--%cd--%aN--%s" --no-renames --after=$after_date
-        // ).unwrap()
         Ok(BufReader::new(command.stdout.take().unwrap()))
     }
 }
