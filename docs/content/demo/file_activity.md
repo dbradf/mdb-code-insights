@@ -2,7 +2,7 @@
 weight: 2
 ---
 {{< hint info >}}
-Before performing this analysis, before you have some data [loaded from a git repository]({{< relref "loading_data.md" >}})
+Before performing this analysis, be sure you have some data [loaded from a git repository]({{< relref "loading_data.md" >}})
 {{< /hint >}}
 
 Now that we have some data in our mongo instance, lets start analyzing it. A useful place to start

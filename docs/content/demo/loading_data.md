@@ -2,7 +2,7 @@
 weight: 1
 ---
 {{< hint info >}}
-Before starting this demo, before to have the prerequisites installed as described in the
+Before starting this demo, be sure to have the prerequisites installed as described in the
 [intro]({{< relref "intro.md" >}}).
 {{< /hint >}}
 

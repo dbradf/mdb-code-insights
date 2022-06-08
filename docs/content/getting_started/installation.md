@@ -13,7 +13,7 @@ In order to use this tool, you will need the following:
 
 ## Install pre-built binaries
 
-Pre-built binaries for Linux, Mac, and Windows are available [here](https://github.com/dbradf/mdb-code-insights/releases/target).
+Pre-built binaries for Linux, Mac, and Windows are available [here](https://github.com/dbradf/mdb-code-insights/releases/latest).
 
 To install, download the appropriate binary for your system to somewhere that is in your PATH. You
 should then be able to execute it from the command line.
