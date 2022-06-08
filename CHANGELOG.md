@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.7 - 2022-06-08
+
+- Fix broken link and typos.
+
 ## 0.1.6 - 2022-06-04
 
 - Use full timestamps from git log.

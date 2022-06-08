@@ -2,7 +2,7 @@
 weight: 5
 ---
 {{< hint info >}}
-Before performing this analysis, you will want to have a [data loaded]({{< relref "loading_data.md" >}})
+Before performing this analysis, you will want to have some [data loaded]({{< relref "loading_data.md" >}})
 {{< /hint >}}
 
 If we load the data in a [MongoDB Atlas](https://www.mongodb.com/atlas/database) cluster, we can use
