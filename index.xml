@@ -12,7 +12,7 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://dbradf.github.io/mdb-code-insights/demo/loading_data/</guid>
-      <description>Before starting this demo, before to have the prerequisites installed as described in the intro.  The first thing we need to do is load data from our git repository into our MongoDB instance. This is done with the load subcommand. You will need a local copy of the git repository you wish to analyze before starting. For the demo, we will assume that the repo has been cloned to $HOME/repos/mongo.</description>
+      <description>Before starting this demo, be sure to have the prerequisites installed as described in the intro.  The first thing we need to do is load data from our git repository into our MongoDB instance. This is done with the load subcommand. You will need a local copy of the git repository you wish to analyze before starting. For the demo, we will assume that the repo has been cloned to $HOME/repos/mongo.</description>
     </item>
     
     <item>
@@ -40,7 +40,7 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://dbradf.github.io/mdb-code-insights/demo/file_activity/</guid>
-      <description>Before performing this analysis, before you have some data loaded from a git repository  Now that we have some data in our mongo instance, lets start analyzing it. A useful place to start it to see which files have been changed the most. Files that change frequently are more likely to contain bugs or be bottlenecks in the development process.
+      <description>Before performing this analysis, be sure you have some data loaded from a git repository  Now that we have some data in our mongo instance, lets start analyzing it. A useful place to start it to see which files have been changed the most. Files that change frequently are more likely to contain bugs or be bottlenecks in the development process.
 Using an aggregation     We can use the following aggregation to find frequently changed files:</description>
     </item>
     
@@ -100,7 +100,7 @@ Using an aggregation     We can analyze the file ownership with the following ag
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://dbradf.github.io/mdb-code-insights/demo/using_charts/</guid>
-      <description>Before performing this analysis, you will want to have a data loaded  If we load the data in a MongoDB Atlas cluster, we can use Charts to quickly create visualizations of the data. This section will look at an example chart.
+      <description>Before performing this analysis, you will want to have some data loaded  If we load the data in a MongoDB Atlas cluster, we can use Charts to quickly create visualizations of the data. This section will look at an example chart.
  This section of the demo only works with data loaded in a MongoDB Atlas cluster. It is not available when running against other MongoDB instances.  Visualizing File Activity     In File ownership part of the demo, we looked at an aggregation that gave us a list of file that have been the most active.</description>
     </item>
     
